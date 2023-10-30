@@ -1,0 +1,24 @@
+FROM python:3.11-slim-bookworm
+
+ARG application_version
+LABEL maintainer="Joe Block <jpb@unixorn.net>"
+LABEL version=${application_version}
+
+RUN apt-get update && \
+    apt-get install -y ca-certificates moosefs-cli --no-install-recommends && \
+    apt-get clean autoclean && \
+    apt-get autoremove --yes && \
+    rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
+    update-ca-certificates
+RUN mkdir -p /opt/wheels
+RUN pip install --upgrade pip
+
+# In dev mode, use requirements.txt so the python deps end up in a
+# cachable layer
+COPY requirements.txt /opt/wheels
+RUN pip install -r /opt/wheels/requirements.txt
+
+COPY dist/*.whl /opt/wheels
+RUN pip install /opt/wheels/*.whl
+
+CMD [bash]
