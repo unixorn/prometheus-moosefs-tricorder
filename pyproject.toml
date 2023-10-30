@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "moosefs-tricorder"
+version = "0.1.0"
+description = ""
+authors = ["Joe Block <jpb@unixorn.net>"]
+readme = "README.md"
+packages = [{include = "moosefs_tricorder"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+prometheus-client = "^0.17.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+# There are multiple names for some of these for ease of use
+moosefs-prometheus-exporter = 'moosefs_tricorder.moosefs:cluster_metrics_collector'
