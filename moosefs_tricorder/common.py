@@ -34,6 +34,8 @@ def load_chunkserver_metrics(moosefs_master: str, moosefs_master_port: int) -> d
     logging.debug(f"output: {output}")
     data = {}
     for line in output:
+        if not line:
+            continue
         try:
             chunks = line.strip().split("^")
             (
