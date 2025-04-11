@@ -102,38 +102,45 @@ class MooseCollector(Collector):
             cs_labels = InfoMetricFamily(
                 "moosefs_chunkserver_labels",
                 "Chunkserver labels",
-                labels=["chunkserver", "port"],
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"],
             )
             cs_version = InfoMetricFamily(
                 "moosefs_chunkserver_version",
                 "Chunkserver version",
-                labels=["chunkserver", "port"],
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"],
             )
             cs_maintenance = InfoMetricFamily(
                 "moosefs_chunkserver_maintenance_status",
                 "Chunkserver maintenance status",
-                labels=["chunkserver", "port"],
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"],
             )
             cs_load = GaugeMetricFamily(
-                "moosefs_chunkserver_load", "Chunkserver load", labels=["chunkserver", "port"]
+                "moosefs_chunkserver_load", "Chunkserver load",
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"]
             )
             cs_port = GaugeMetricFamily(
-                "moosefs_chunkserver_port", "Chunkserver port", labels=["chunkserver", "port"]
+                "moosefs_chunkserver_port", "Chunkserver port",
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"]
             )
             cs_cs_id = GaugeMetricFamily(
-                "moosefs_chunkserver_id", "Chunkserver ID", labels=["chunkserver", "port"]
+                "moosefs_chunkserver_id", "Chunkserver ID",
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"]
             )
             cs_chunk_count = GaugeMetricFamily(
-                "moosefs_chunkserver_chunk_count", "Chunk Count", labels=["chunkserver", "port"]
+                "moosefs_chunkserver_chunk_count", "Chunk Count",
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"]
             )
             cs_disk_used = GaugeMetricFamily(
-                "moosefs_chunkserver_disk_used", "Disk used", labels=["chunkserver", "port"]
+                "moosefs_chunkserver_disk_used", "Disk used",
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"]
             )
             cs_disk_total = GaugeMetricFamily(
-                "moosefs_chunkserver_disk_total", "Disk total", labels=["chunkserver", "port"]
+                "moosefs_chunkserver_disk_total", "Disk total",
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"]
             )
             cs_disk_usage = GaugeMetricFamily(
-                "moosefs_chunkserver_disk_usage", "Disk usage %", labels=["chunkserver", "port"]
+                "moosefs_chunkserver_disk_usage", "Disk usage %",
+                labels=["moosefs_master", "moosefs_master_port", "chunkserver", "port"]
             )
 
             cluster_chunk_count = GaugeMetricFamily(
@@ -184,14 +191,14 @@ class MooseCollector(Collector):
                         f"{cs}: Adding label {chunkserver_data[cs]['labels']}"
                     )
                     cs_labels.add_metric(
-                        [cs, port], value={"labels": chunkserver_data[cs]["labels"]}
+                        [self.moosefs_master, moosefs_master_port, cs, port], value={"labels": chunkserver_data[cs]["labels"]}
                     )
                 if "maintenance" in chunkserver_data[cs]:
                     logging.debug(
                         f"{cs}: Adding maintenance {chunkserver_data[cs]['maintenance']}"
                     )
                     cs_maintenance.add_metric(
-                        [cs, port], value={"maintenance": chunkserver_data[cs]["maintenance"]}
+                        [self.moosefs_master, moosefs_master_port, cs, port], value={"maintenance": chunkserver_data[cs]["maintenance"]}
                     )
                     if chunkserver_data[cs]["maintenance"] != "maintenance_off":
                         mfs_maintenance_count += 1
@@ -200,7 +207,7 @@ class MooseCollector(Collector):
                         f"{cs}: Adding version {chunkserver_data[cs]['version']}"
                     )
                     cs_version.add_metric(
-                        [cs, port], value={"version": chunkserver_data[cs]["version"]}
+                        [self.moosefs_master, moosefs_master_port, cs, port], value={"version": chunkserver_data[cs]["version"]}
                     )
                 # Now all the gauges
                 if "chunk_count" in chunkserver_data[cs]:
@@ -208,33 +215,33 @@ class MooseCollector(Collector):
                         f"{cs}: Adding chunk_count {chunkserver_data[cs]['chunk_count']}"
                     )
                     mfs_chunk_count += int(chunkserver_data[cs]["chunk_count"])
-                    cs_chunk_count.add_metric([cs, port], chunkserver_data[cs]["chunk_count"])
+                    cs_chunk_count.add_metric([self.moosefs_master, moosefs_master_port, cs, port], chunkserver_data[cs]["chunk_count"])
                 if "cs_id" in chunkserver_data[cs]:
                     logging.debug(f"{cs}: Adding cs_id {chunkserver_data[cs]['cs_id']}")
-                    cs_cs_id.add_metric([cs, port], chunkserver_data[cs]["cs_id"])
+                    cs_cs_id.add_metric([self.moosefs_master, moosefs_master_port, cs, port], chunkserver_data[cs]["cs_id"])
                 if "disk_total" in chunkserver_data[cs]:
                     logging.debug(
                         f"{cs}: Adding disk_total {chunkserver_data[cs]['disk_total']}"
                     )
-                    cs_disk_total.add_metric([cs, port], chunkserver_data[cs]["disk_total"])
+                    cs_disk_total.add_metric([self.moosefs_master, moosefs_master_port, cs, port], chunkserver_data[cs]["disk_total"])
                     mfs_disk_total += int(chunkserver_data[cs]["disk_total"])
                 if "disk_usage" in chunkserver_data[cs]:
                     logging.debug(
                         f"{cs}: Adding disk_usage {chunkserver_data[cs]['disk_usage']}"
                     )
-                    cs_disk_usage.add_metric([cs, port], chunkserver_data[cs]["disk_usage"])
+                    cs_disk_usage.add_metric([self.moosefs_master, moosefs_master_port, cs, port], chunkserver_data[cs]["disk_usage"])
                 if "disk_used" in chunkserver_data[cs]:
                     logging.debug(
                         f"{cs}: Adding disk_used {chunkserver_data[cs]['disk_used']}"
                     )
-                    cs_disk_used.add_metric([cs, port], chunkserver_data[cs]["disk_used"])
+                    cs_disk_used.add_metric([self.moosefs_master, moosefs_master_port, cs, port], chunkserver_data[cs]["disk_used"])
                     mfs_disk_used += int(chunkserver_data[cs]["disk_used"])
                 if "load" in chunkserver_data[cs]:
                     logging.debug(f"{cs}: Adding load {chunkserver_data[cs]['load']}")
-                    cs_load.add_metric([cs, port], chunkserver_data[cs]["load"])
+                    cs_load.add_metric([self.moosefs_master, moosefs_master_port, cs, port], chunkserver_data[cs]["load"])
                 if "port" in chunkserver_data[cs]:
                     logging.debug(f"{cs}: Adding port {chunkserver_data[cs]['port']}")
-                    cs_port.add_metric([cs, port], int(chunkserver_data[cs]["port"]))
+                    cs_port.add_metric([self.moosefs_master, moosefs_master_port, cs, port], int(chunkserver_data[cs]["port"]))
 
             # Report aggregated cluster metrics
             mfs_disk_usage = float(mfs_disk_used / mfs_disk_total)
