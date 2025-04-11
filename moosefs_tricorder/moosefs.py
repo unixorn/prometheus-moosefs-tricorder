@@ -40,10 +40,10 @@ class MooseCollector(Collector):
         """
         Collect moosefs statistics
         """
-        master_data = load_master_metrics(moosefs_master=self.moosefs_master)
+        master_data = load_master_metrics(moosefs_master=self.moosefs_master, moosefs_master_port=self.moosefs_master_port)
         # Master stats
         try:
-            logging.info(f"Collecting master stats for {self.moosefs_master}")
+            logging.info(f"Collecting master stats for {self.moosefs_master}:{self.moosefs_master_port}")
             m_all_cpu = GaugeMetricFamily(
                 "moosefs_master_all_cpu",
                 "moosefs master all cpu",
@@ -95,7 +95,7 @@ class MooseCollector(Collector):
             logging.error("Failed to create master metrics")
             logging.error(e)
 
-        chunkserver_data = load_chunkserver_metrics(moosefs_master=self.moosefs_master)
+        chunkserver_data = load_chunkserver_metrics(moosefs_master=self.moosefs_master, moosefs_master_port=self.moosefs_master_port)
         try:
             logging.debug("Parsing chunkserver data")
             cs_labels = InfoMetricFamily(
