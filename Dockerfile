@@ -42,6 +42,6 @@ RUN set -eux; \
 
 RUN mkdir -p /opt/wheels
 COPY --from=build /data/dist/*.whl /opt/wheels
-RUN pip install /opt/wheels/*.whl
+RUN pip install --disable-pip-version-check /opt/wheels/*.whl
 
 CMD [ "bash" ]
