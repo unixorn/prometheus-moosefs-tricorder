@@ -49,3 +49,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
 ```
+
+## Contributors
+
+<a href="https://github.com/unixorn/prometheus-moosefs-tricorder/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=unixorn/prometheus-moosefs-tricorder" />
+</a>
+
+Made with [contributors-img](https://contributors-img.web.app).
