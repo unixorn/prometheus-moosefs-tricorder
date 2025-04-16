@@ -23,17 +23,19 @@ def run(command: str):
     return (output, err)
 
 
-def load_chunkserver_metrics(moosefs_master: str) -> dict:
+def load_chunkserver_metrics(moosefs_master: str, moosefs_master_port: int) -> dict:
     """
     Load chunkserver metrics
     """
     logging.info("Loading chunkserver metrics...")
-    command = f"mfscli -H {moosefs_master} -SCS -s^"
+    command = f"mfscli -H {moosefs_master} -P {moosefs_master_port} -SCS -s^"
     stderr, _ = run(command)
     output = stderr.decode().split("\n")
     logging.debug(f"output: {output}")
     data = {}
     for line in output:
+        if not line:
+            continue
         try:
             chunks = line.strip().split("^")
             (
@@ -68,12 +70,12 @@ def load_chunkserver_metrics(moosefs_master: str) -> dict:
     return data
 
 
-def load_master_metrics(moosefs_master) -> dict:
+def load_master_metrics(moosefs_master: str, moosefs_master_port: int) -> dict:
     """
     Load master metrics
     """
-    logging.info(f"Loading metrics for master node {moosefs_master}...")
-    command = f"mfscli -H {moosefs_master} -SIM -s_"
+    logging.info(f"Loading metrics for master node {moosefs_master}:{moosefs_master_port}...")
+    command = f"mfscli -H {moosefs_master} -P {moosefs_master_port} -SIM -s_"
     logging.debug(f"Running {command}")
     output, err = run(command)
     logging.debug(f"output: {output}")
